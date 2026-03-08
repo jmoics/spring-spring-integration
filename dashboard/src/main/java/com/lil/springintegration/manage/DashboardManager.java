@@ -42,9 +42,10 @@ public class DashboardManager {
         DashboardManager.dashboardStatusDao.setProperty("softwareBuild", props.getRuntimeProperties().getProperty("software.build", "unknown"));
 
         // Make an domain-specific payload object
-        // AppSupportStatus status =
+        AppSupportStatus status = new AppSupportStatus(props.getRuntimeProperties().getProperty("softwareBuild"), new Date());
 
         // Use MessageBuilder utility class to construct a Message with our domain object as payload
+        GenericMessage message = (GenericMessage) MessageBuilder.withPayload(status).build();
 
         // Now, to send our message, we need a channel!
 
