@@ -50,6 +50,9 @@ public class DashboardManager {
     private void initializeView() {
         DashboardManager.setDashboardStatus("softwareBuild", "undetermined");
         // Subscribe to our tech support channel
+
+        AbstractSubscribableChannel techSupportChannel = (DirectChannel) DashboardManager.getDashboardContext().getBean("techSupportChannel");
+        techSupportChannel.subscribe(new ViewMessageHandler());
     }
 
     private void initializeTechSupport() {
