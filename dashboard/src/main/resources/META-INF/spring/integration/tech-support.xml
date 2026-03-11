@@ -14,6 +14,10 @@
     <int:channel id="techSupportChannel" />
 
     <!-- QueueChannel example (Pollable) -->
+    <int:channel id="updateNotificationQueueChannel">
+        <!-- Solo puede mantener 5 mensajes en la cola, si se envía un mensaje más, el mensaje más antiguo se eliminará -->
+        <int:queue capacity="5" />
+    </int:channel>
 
 </beans:beans>
 

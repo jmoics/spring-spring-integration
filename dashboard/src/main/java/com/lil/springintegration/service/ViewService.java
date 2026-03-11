@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.channel.AbstractSubscribableChannel;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.PollableChannel;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,10 +20,12 @@ public class ViewService {
 
     // TODO - refactor to use Spring Dependency Injection
     private AbstractSubscribableChannel techSupportChannel;
+    private PollableChannel updateNotificationChannel;
 
     public ViewService() {
 
         // Initialize our updateNotificationChannel
+        updateNotificationChannel = (PollableChannel) DashboardManager.getDashboardContext().getBean("updateNotificationQueueChannel");
 
         AbstractSubscribableChannel techSupportChannel = (DirectChannel) DashboardManager.getDashboardContext().getBean("techSupportChannel");
         techSupportChannel.subscribe(new ViewMessageHandler());
@@ -38,6 +43,10 @@ public class ViewService {
 
     private void checkForNotifications() {
         // Check queue for notifications that the software needs to be updated
+        Message<?> message = updateNotificationChannel.receive(1000);
+        if (message != null) {
+            DashboardManager.setDashboardStatus("softwareBuild", message.getPayload().toString());
+        }
     }
 
     private static class ViewMessageHandler extends TechSupportMessageHandler {
