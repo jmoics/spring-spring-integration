@@ -27,7 +27,7 @@ public class ViewService {
         // Initialize our updateNotificationChannel
         updateNotificationChannel = (PollableChannel) DashboardManager.getDashboardContext().getBean("updateNotificationQueueChannel");
 
-        AbstractSubscribableChannel techSupportChannel = (DirectChannel) DashboardManager.getDashboardContext().getBean("techSupportChannel");
+        techSupportChannel = (DirectChannel) DashboardManager.getDashboardContext().getBean("techSupportChannel");
         techSupportChannel.subscribe(new ViewMessageHandler());
         this.start();
     }
@@ -50,6 +50,7 @@ public class ViewService {
     }
 
     private static class ViewMessageHandler extends TechSupportMessageHandler {
+
         protected void receiveAndAcknowledge(AppSupportStatus status) {
             DashboardManager.setDashboardStatus("softwareBuild", status.getVersion());
         }
