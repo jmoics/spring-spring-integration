@@ -4,15 +4,17 @@
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:int="http://www.springframework.org/schema/integration"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-			   https://www.springframework.org/schema/beans/spring-beans.xsd
-			   http://www.springframework.org/schema/integration
-			   https://www.springframework.org/schema/integration/spring-integration.xsd" >
+               https://www.springframework.org/schema/beans/spring-beans.xsd
+               http://www.springframework.org/schema/integration
+               https://www.springframework.org/schema/integration/spring-integration.xsd" >
 
     <!-- Configure Spring Integration Status Monitor message flow here -->
 
     <!-- DirectChannel example (Subscribable) -->
+    <int:channel id="rawApiJsonChannel" />
 
     <!-- Transformer example -->
+    <int:json-to-object-transformer input-channel="rawApiJsonChannel" output-channel="statusMonitorChannel" type="com.lil.springintegration.util.AppSupportStatus"/>
 
     <!-- PublishSubscribeChannel example (Subscribable) -->
     <int:publish-subscribe-channel id="statusMonitorChannel" />
