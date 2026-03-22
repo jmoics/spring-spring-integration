@@ -31,7 +31,9 @@ public class DashboardManager {
         initializeDashboard();
     }
 
-    public static ClassPathXmlApplicationContext getDashboardContext() { return (ClassPathXmlApplicationContext) DashboardManager.context; }
+    public static ClassPathXmlApplicationContext getDashboardContext() {
+        return (ClassPathXmlApplicationContext) DashboardManager.context;
+    }
 
     public static void setDashboardStatus(String key, String value) {
         String v = (value != null ? value : "");

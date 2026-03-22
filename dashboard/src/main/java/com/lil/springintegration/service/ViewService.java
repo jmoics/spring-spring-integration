@@ -36,6 +36,9 @@ public class ViewService {
         }, 3000, 3000);
     }
 
+    /**
+     * Se va revisando la cola de notificaciones para ver si hay alguna que se pueda mostrar (habrá si es que el filtro dio match al enviar el mensaje a techSupportChannel).
+     */
     private void checkForNotifications() {
         /* Check queue for notifications that the software needs to be updated */
         GenericMessage<?> message = (GenericMessage<?>) updateNotificationChannel.receive(1000);
@@ -46,6 +49,9 @@ public class ViewService {
         }
     }
 
+    /**
+     * Recibe los mensajes que llegan al channel techSupportChannel.
+     */
     private static class ViewMessageHandler extends TechSupportMessageHandler {
         protected void receive(AppSupportStatus status) {
             DashboardManager.setDashboardStatus("softwareBuild", status.getRunningVersion());
