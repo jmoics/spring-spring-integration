@@ -29,6 +29,8 @@ public class TechSupportService {
          *  Hint: To subscribe, use ViewService.java:37 as an example. Let your handler be an instance of local inner class ServiceMessageHandler
          */
         // Challenge code here
+        techSupportChannel = (PublishSubscribeChannel) DashboardManager.getDashboardContext().getBean("techSupportChannel");
+        techSupportChannel.subscribe(new ServiceMessageHandler());
 
         // Initialize our updateNotificationChannel
         updateNotificationChannel = (QueueChannel) DashboardManager.getDashboardContext().getBean("updateNotificationQueueChannel");
@@ -37,6 +39,7 @@ public class TechSupportService {
 
     private void start() {
         // Represents long-running process thread
+        // Aqui se actualiza cada 10 segundos la informacion de la version, sobreescribiendo la inicializada por techSupportChannel
         timer.schedule(new TimerTask() {
             public void run() {
                 checkVersionCurrency();
@@ -48,12 +51,15 @@ public class TechSupportService {
 
         // Check REST api for more current software version
 
+        // En false para que el channel de notificaciones no envíe mensajes y se mantenga el mensaje enviado inicialmente por techSupportChannel en el view
         if (false) {
             updateNotificationChannel.send(MessageBuilder.withPayload("New software version available.").build(), 1000);
         }
     }
 
     private static class ServiceMessageHandler extends TechSupportMessageHandler {
+
+        // Algo similar a ViewService, también escucha el channel pero en este caso pinta un log en lugar de actualizar el property que actualizaría la vista
         protected void receiveAndAcknowledge(AppSupportStatus status) {
             TechSupportService.logger.info("Tech support service received new build notification: " + status.toString());
         }

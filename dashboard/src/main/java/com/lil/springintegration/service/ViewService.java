@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.integration.channel.AbstractPollableChannel;
 import org.springframework.integration.channel.AbstractSubscribableChannel;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.support.GenericMessage;
 
@@ -33,7 +34,7 @@ public class ViewService {
          *  Hint: Change the cast in line 36
          */
 
-        techSupportChannel = (DirectChannel) DashboardManager.getDashboardContext().getBean("techSupportChannel");
+        techSupportChannel = (PublishSubscribeChannel) DashboardManager.getDashboardContext().getBean("techSupportChannel");
         techSupportChannel.subscribe(new ViewMessageHandler());
         this.start();
     }
@@ -56,6 +57,8 @@ public class ViewService {
     }
 
     private static class ViewMessageHandler extends TechSupportMessageHandler {
+        // Configuramos el handler que en caso reciba un mensaje actualiza el property softwareBuild del dashboardStatusDao con el valor de la nueva build recibida en el mensaje.
+        // Esto permite que el cambio haga efecto en la vista ya que en DashboardApplication se está seteando este property como atributo status en el model.
         protected void receiveAndAcknowledge(AppSupportStatus status) {
             DashboardManager.setDashboardStatus("softwareBuild", status.getVersion());
         }

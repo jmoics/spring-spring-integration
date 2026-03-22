@@ -10,6 +10,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.integration.channel.AbstractSubscribableChannel;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class DashboardManager {
 
     public DashboardManager() {
         DashboardManager.context = new ClassPathXmlApplicationContext("/META-INF/spring/application.xml", DashboardManager.class);
+        // Primero iniciamos los servicios, para que estén listos para recibir mensajes cuando se inicialice el dashboard y se envíe el mensaje de notificación de nueva build.
         initializeServices();
         initializeDashboard();
     }
@@ -50,6 +52,7 @@ public class DashboardManager {
     private void initializeDashboard() {
         DashboardManager.setDashboardStatus("softwareBuild", "undetermined");
 
+        // Obtiene los properties configurados en application.properties que son instanciados mediante el bean appProperties en application.xml
         AppProperties props = (AppProperties) DashboardManager.getDashboardContext().getBean("appProperties");
 
         // Make a domain-specific payload object
@@ -66,10 +69,10 @@ public class DashboardManager {
          */
 
         // Now, to send our message, we need a channel! (We also need subscribers before this send will be successful.)
-        AbstractSubscribableChannel techSupportChannel = (DirectChannel) DashboardManager.context.getBean("techSupportChannel");
+        // Aqui enviamos el mensaje a través del canal, y el canal se encarga de distribuirlo a los suscriptores registrados.
+        AbstractSubscribableChannel techSupportChannel = (PublishSubscribeChannel) DashboardManager.context.getBean("techSupportChannel");
         techSupportChannel.send(message);
     }
-
 }
 
 
