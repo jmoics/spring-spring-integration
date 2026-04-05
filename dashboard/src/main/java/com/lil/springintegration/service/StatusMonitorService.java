@@ -63,6 +63,8 @@ public class StatusMonitorService {
     }
 
     private class ServiceMessageHandler extends TechSupportMessageHandler {
+
+        @Override
         protected void receive(AppSupportStatus status) {
             setCurrentSupportStatus(status);
         }
